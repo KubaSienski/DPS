@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="701e813c-4b5a-4587-829f-e7b734ec03a6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2YZEKxfWPqKCfbR5zJmvPFmefYG" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;projekt-2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/siens/OneDrive/Pulpit/Studia/UKSW inf/Semestr 5/CPS/projekt1&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="projekt1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="projekt1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="701e813c-4b5a-4587-829f-e7b734ec03a6" name="Changes" comment="" />
+      <created>1700724640593</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1700724640593</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.github.evgenys91.machinet.common.dslhistory.DslHistoryState">
+    <option name="historyDtoById">
+      <map>
+        <entry key="34b2af">
+          <value>
+            <ChatHistoryModel>
+              <option name="contextFilesPaths">
+                <list>
+                  <option value="$PROJECT_DIR$/main.py" />
+                </list>
+              </option>
+              <option name="id" value="34b2af" />
+              <option name="initiateTms" value="1704353483960" />
+              <option name="request" value="why do i get exit code -1073740791 (0xC0000409) when i try to take live sound" />
+              <option name="response" value="" />
+              <option name="responseDescription" value="The exit code -1073740791 (0xC0000409) is a system error code that indicates an exception occurred in your program. In this case, it seems to be related to accessing the live sound input.&#10;&#10;One possible reason for this error is that the PyAudio library is not installed or configured correctly. PyAudio is used in your code to handle audio input from the microphone. Make sure you have installed PyAudio using the correct version for your Python environment.&#10;&#10;If PyAudio is already installed, the error may be caused by a compatibility issue between PyAudio and your operating system. Try updating PyAudio to the latest version or using a different version that is known to work well with your operating system.&#10;&#10;Additionally, check if you have the necessary permissions to access the microphone on your system. Some operating systems require explicit permission to access audio devices. Make sure your program has the necessary permissions to access the microphone.&#10;&#10;If the issue persists, it would be helpful to provide more information about your operating system, Python version, and any error messages or stack traces that are displayed when the error occurs. This information can help in diagnosing the specific cause of the error." />
+              <option name="responseFileName" value="" />
+              <option name="responseFilePath" value="" />
+              <option name="responseTms" value="1704353487369" />
+              <option name="usedLocalFilePaths">
+                <list>
+                  <option value="$PROJECT_DIR$/main.py" />
+                </list>
+              </option>
+            </ChatHistoryModel>
+          </value>
+        </entry>
+        <entry key="76275b">
+          <value>
+            <ChatHistoryModel>
+              <option name="contextFilesPaths">
+                <list>
+                  <option value="$PROJECT_DIR$/main.py" />
+                </list>
+              </option>
+              <option name="id" value="76275b" />
+              <option name="initiateTms" value="1704355383389" />
+              <option name="request" value="how to change qt window size" />
+              <option name="response" value="" />
+              <option name="responseDescription" value="To change the size of a Qt window, you can use the `resize()` method of the `QWidget` class. In your code, the `AppWidgetWithUI` class inherits from `QWidget`, so you can use the `resize()` method to change the window size.&#10;&#10;Here's an example of how you can change the window size in your code:&#10;&#10;```python&#10;class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):&#10;    def __init__(self, parent=None):&#10;        super(AppWidgetWithUI, self).__init__(parent)&#10;        # ... your code ...&#10;&#10;        # Change the window size&#10;        self.resize(800, 600)  # Set the width and height as desired&#10;```&#10;&#10;In the example above, the `resize()` method is called in the `__init__()` method of the `AppWidgetWithUI` class. You can adjust the width and height values to your desired window size.&#10;&#10;Remember to call the `resize()` method before calling `show()` to ensure that the window is displayed with the desired size.&#10;&#10;Alternatively, you can also set the initial window size using the `setGeometry()` method, which allows you to specify the position and size of the window in one call:&#10;&#10;```python&#10;self.setGeometry(100, 100, 800, 600)  # Set x, y, width, height&#10;```&#10;&#10;In the example above, the window will be positioned at (100, 100) on the screen and have a width of 800 and height of 600.&#10;&#10;Choose the method that suits your needs best and modify the values according to your desired window size." />
+              <option name="responseFileName" value="" />
+              <option name="responseFilePath" value="" />
+              <option name="responseTms" value="1704355387925" />
+              <option name="usedLocalFilePaths">
+                <list>
+                  <option value="$PROJECT_DIR$/main.py" />
+                </list>
+              </option>
+            </ChatHistoryModel>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
