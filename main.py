@@ -8,7 +8,7 @@ from PyQt5 import uic, QtWidgets, QtCore
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 matplotlib.use('Qt5Agg')
-FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'interface.ui'))
+FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'interface2.ui'))
 
 
 class MplCanvas(FigureCanvasQTAgg):
@@ -40,6 +40,15 @@ def frequency_to_note_symbol(frequency):
     return note_name + str(octave - 1)  # Subtract 1 to align octave with standard notation
 
 
+def closest_match(freqs, reference_freqs):
+    # Znajdź częstotliwość z 'freqs', która ma najbliższe dopasowanie do jednej z 'reference_freqs'
+    closest_freq = min(
+        reference_freqs,
+        key=lambda ref_freq: min(abs(freq - ref_freq) for freq in freqs),
+    )
+    return closest_freq
+
+
 class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
     def __init__(self, parent=None):
         super(AppWidgetWithUI, self).__init__(parent)
@@ -57,14 +66,20 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         self.btn_load.clicked.connect(self.load_clicked)
         self.btn_recognize.clicked.connect(self.rec_clicked)
 
+        self.dtmf_tones = {
+            697: {1209: "1", 1336: "2", 1477: "3"},
+            770: {1209: "4", 1336: "5", 1477: "6"},
+            852: {1209: "7", 1336: "8", 1477: "9"},
+            941: {1209: "*", 1336: "0", 1477: "#"},
+        }
+
     def load_clicked(self):
         self._nazwa_pliku = 'test'
         self._nazwa_pliku = self.open_file_dialog()
         self.le_filePath.setText(self._nazwa_pliku)
 
-    def display(self, dominant_note, significant_notes):
-        self.txt_note.setPlainText(f"Dominant Note: {dominant_note}")
-        self.txt_harmonic.setPlainText(f"Other Notes: {significant_notes}")
+    def display(self, detected_button):
+        self.txt_harmonic.setPlainText(f"Pushed Keys: {detected_button}")
 
     def rec_clicked(self):
         # Wczytywanie pliku WAV
@@ -72,8 +87,9 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         if len(data.shape) == 2:
             data = data[:, 0]
 
-        dominant_note, significant_notes = self.analyze_data(data, sample_rate)
-        self.display(dominant_note, significant_notes)
+        detected_button = self.analyze_data(data, sample_rate)
+
+        self.display(detected_button)
 
     def open_file_dialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -96,22 +112,26 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         magnitude_spectrum = magnitude_spectrum[:half_length]
 
         # Wykrywanie tonów
-        threshold = 0.1 * np.max(magnitude_spectrum)  # Progowa wartość magnitudy
+        threshold = 0.5 * np.max(magnitude_spectrum)  # Progowa wartość magnitudy
         significant_indices = np.where(magnitude_spectrum > threshold)[0]
         significant_frequencies = frequencies[significant_indices]
-        significant_notes = [frequency_to_note_symbol(f) for f in significant_frequencies]
-        significant_notes = set(significant_notes)
-
-        # Dominujący ton
-        dominant_index = np.argmax(magnitude_spectrum)
-        dominant_frequency = frequencies[dominant_index]
-        dominant_note = frequency_to_note_symbol(dominant_frequency)
 
         # Wyświetlanie wyników
         self.sc.axes.cla()
         self.sc.axes.plot(frequencies, magnitude_spectrum, label='Magnitude Spectrum')
         self.sc.draw()
-        return dominant_note, significant_notes
+
+        peak_indices = np.argsort(significant_frequencies)[-1:]
+        peak_frequencies = significant_frequencies[0], significant_frequencies[peak_indices]
+
+        # Znajdź najbliższe dopasowania w tabeli DTMF
+        row_freq = closest_match(peak_frequencies, self.dtmf_tones.keys())
+        col_freq = closest_match(peak_frequencies, self.dtmf_tones[row_freq].keys())
+
+        # Zwróć odpowiadający przycisk
+        detected_button = self.dtmf_tones[row_freq][col_freq]
+
+        return detected_button
 
 
 if __name__ == "__main__":
