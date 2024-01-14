@@ -49,6 +49,13 @@ def closest_match(freqs, reference_freqs):
     return closest_freq
 
 
+def split_audio(audio_data, sample_rate, segment_length=0.1):
+    # Długość segmentu w próbkach
+    segment_length_samples = int(segment_length * sample_rate)
+    for start in range(0, len(audio_data), segment_length_samples):
+        yield audio_data[start:start + segment_length_samples]
+
+
 class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
     def __init__(self, parent=None):
         super(AppWidgetWithUI, self).__init__(parent)
@@ -87,9 +94,14 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         if len(data.shape) == 2:
             data = data[:, 0]
 
-        detected_button = self.analyze_data(data, sample_rate)
+        detected_buttons = self.analyze_full_recording(data, sample_rate)
 
-        self.display(detected_button)
+        detected_buttons_clear = [detected_buttons[0]]
+        for i, element in enumerate(detected_buttons):
+            if i > 0 and detected_buttons[i - 1] != element:
+                detected_buttons_clear.append(element)
+
+        self.display(detected_buttons_clear)
 
     def open_file_dialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -98,6 +110,13 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
                                                              options=options)
         if file_name:
             return file_name
+
+    def analyze_full_recording(self, audio_data, sample_rate):
+        detected_keys = []
+        for segment in split_audio(audio_data, sample_rate):
+            detected_key = self.analyze_data(segment, sample_rate)
+            detected_keys.append(detected_key)
+        return detected_keys
 
     def analyze_data(self, data, sample_rate):
         # Okno Hanninga i FFT
