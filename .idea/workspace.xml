@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="701e813c-4b5a-4587-829f-e7b734ec03a6" name="Changes" comment="Project number 1 done. Possible addon: live note recognizing.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
