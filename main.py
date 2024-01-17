@@ -89,6 +89,7 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         self.txt_harmonic.setPlainText(f"Pushed Keys: {detected_button}")
 
     def rec_clicked(self):
+        self.sc.axes.cla()
         # Wczytywanie pliku WAV
         sample_rate, data = scipy.io.wavfile.read(self._nazwa_pliku)
         if len(data.shape) == 2:
@@ -136,7 +137,6 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         significant_frequencies = frequencies[significant_indices]
 
         # Wyświetlanie wyników
-        self.sc.axes.cla()
         self.sc.axes.plot(frequencies, magnitude_spectrum, label='Magnitude Spectrum')
         self.sc.draw()
 
