@@ -21,7 +21,7 @@ class MplCanvas(FigureCanvasQTAgg):
 
     @staticmethod
     def minimumSizeHint():
-        return QtCore.QSize(1000, 300)
+        return QtCore.QSize(1440, 300)
 
 
 def closest_match(freqs, reference_freqs):
@@ -74,17 +74,6 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         sample_rate, data = scipy.io.wavfile.read(self._nazwa_pliku)
         if len(data.shape) == 2:
             data = data[:, 0]
-
-        # Okno Hanninga i FFT
-        window = np.hanning(len(data))
-        fft_result = scipy.fft.fft(data * window)
-        magnitude_spectrum = np.abs(fft_result)
-
-        # Skalowanie częstotliwości
-        frequencies = np.linspace(0, sample_rate, len(magnitude_spectrum))
-        half_length = len(frequencies) // 2
-        frequencies = frequencies[:half_length]
-        magnitude_spectrum = magnitude_spectrum[:half_length]
 
         def on_select(x_min, x_max):
             # Convert the selected time range to sample indices
