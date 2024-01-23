@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>962</width>
-    <height>216</height>
+    <height>236</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -79,7 +79,10 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="img_layout"/>
+    <layout class="QVBoxLayout" name="full_plot_layout"/>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="cut_plot_layout"/>
    </item>
   </layout>
  </widget>

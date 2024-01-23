@@ -3,9 +3,11 @@ import os
 import numpy as np
 import scipy
 import queue
+
 from matplotlib.figure import Figure
 from PyQt5 import uic, QtWidgets, QtCore
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.widgets import SpanSelector
 
 matplotlib.use('Qt5Agg')
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'interface2.ui'))
@@ -19,25 +21,7 @@ class MplCanvas(FigureCanvasQTAgg):
 
     @staticmethod
     def minimumSizeHint():
-        return QtCore.QSize(800, 300)
-
-
-def frequency_to_note_symbol(frequency):
-    if frequency == 0:
-        return "N/A"  # Return a placeholder value if the frequency is zero
-
-    # Calculate the note number with the correct offset (69 for A4 = 440 Hz)
-    note_number = round(12 * np.log2(frequency / 440) + 69)
-
-    # Calculate the octave
-    octave = note_number // 12
-
-    # Calculate the note name
-    note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    note_name = note_names[note_number % 12]
-
-    # Return the note symbol
-    return note_name + str(octave - 1)  # Subtract 1 to align octave with standard notation
+        return QtCore.QSize(1000, 300)
 
 
 def closest_match(freqs, reference_freqs):
@@ -49,24 +33,20 @@ def closest_match(freqs, reference_freqs):
     return closest_freq
 
 
-def split_audio(audio_data, sample_rate, segment_length=0.1):
-    # Długość segmentu w próbkach
-    segment_length_samples = int(segment_length * sample_rate)
-    for start in range(0, len(audio_data), segment_length_samples):
-        yield audio_data[start:start + segment_length_samples]
-
-
 class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
     def __init__(self, parent=None):
         super(AppWidgetWithUI, self).__init__(parent)
+        self.span = None
         self.thread = None
         self.stream = None
         self.streaming = False
         self.setupUi(self)
         self._nazwa_pliku = ''
 
+        self.ax = MplCanvas(self, width=5, height=4, dpi=100)
+        self.full_plot_layout.addWidget(self.ax)
         self.sc = MplCanvas(self, width=5, height=4, dpi=100)
-        self.img_layout.addWidget(self.sc)
+        self.cut_plot_layout.addWidget(self.sc)
 
         self.audio_queue = queue.Queue()
         self.max_tones = 5
@@ -89,20 +69,52 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         self.txt_harmonic.setPlainText(f"Pushed Keys: {detected_button}")
 
     def rec_clicked(self):
-        self.sc.axes.cla()
+        self.ax.axes.cla()
         # Wczytywanie pliku WAV
         sample_rate, data = scipy.io.wavfile.read(self._nazwa_pliku)
         if len(data.shape) == 2:
             data = data[:, 0]
 
-        detected_buttons = self.analyze_full_recording(data, sample_rate)
+        # Okno Hanninga i FFT
+        window = np.hanning(len(data))
+        fft_result = scipy.fft.fft(data * window)
+        magnitude_spectrum = np.abs(fft_result)
 
-        detected_buttons_clear = [detected_buttons[0]]
-        for i, element in enumerate(detected_buttons):
-            if i > 0 and detected_buttons[i - 1] != element:
-                detected_buttons_clear.append(element)
+        # Skalowanie częstotliwości
+        frequencies = np.linspace(0, sample_rate, len(magnitude_spectrum))
+        half_length = len(frequencies) // 2
+        frequencies = frequencies[:half_length]
+        magnitude_spectrum = magnitude_spectrum[:half_length]
 
-        self.display(detected_buttons_clear)
+        def on_select(x_min, x_max):
+            # Convert the selected time range to sample indices
+            start_sample = int(x_min * sample_rate)
+            end_sample = int(x_max * sample_rate)
+
+            # Ensure end_sample does not exceed the length of the data
+            end_sample = min(end_sample, len(data))
+
+            # Select the data within the specified time range
+            selected_data = data[start_sample:end_sample]
+            print(selected_data)
+
+            # Now you can further process the selected_data as needed
+            self.analyze_data(selected_data, sample_rate)
+
+        length = data.shape[0] / sample_rate
+        time = np.linspace(0., length, data.shape[0])
+        self.ax.axes.plot(time, data)
+        self.ax.draw()
+
+        self.span = SpanSelector(
+            self.ax.axes,
+            on_select,
+            "horizontal",
+            useblit=True,
+            props=dict(alpha=0.5, facecolor="tab:blue"),
+            interactive=True,
+            drag_from_anywhere=True
+        )
 
     def open_file_dialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -111,13 +123,6 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
                                                              options=options)
         if file_name:
             return file_name
-
-    def analyze_full_recording(self, audio_data, sample_rate):
-        detected_keys = []
-        for segment in split_audio(audio_data, sample_rate):
-            detected_key = self.analyze_data(segment, sample_rate)
-            detected_keys.append(detected_key)
-        return detected_keys
 
     def analyze_data(self, data, sample_rate):
         # Okno Hanninga i FFT
@@ -132,11 +137,12 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         magnitude_spectrum = magnitude_spectrum[:half_length]
 
         # Wykrywanie tonów
-        threshold = 0.5 * np.max(magnitude_spectrum)  # Progowa wartość magnitudy
+        threshold = 0.75 * np.max(magnitude_spectrum)  # Progowa wartość magnitudy
         significant_indices = np.where(magnitude_spectrum > threshold)[0]
         significant_frequencies = frequencies[significant_indices]
 
         # Wyświetlanie wyników
+        self.sc.axes.cla()
         self.sc.axes.plot(frequencies, magnitude_spectrum, label='Magnitude Spectrum')
         self.sc.draw()
 
@@ -150,7 +156,7 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         # Zwróć odpowiadający przycisk
         detected_button = self.dtmf_tones[row_freq][col_freq]
 
-        return detected_button
+        self.display(detected_button)
 
 
 if __name__ == "__main__":
