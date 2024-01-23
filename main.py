@@ -2,42 +2,37 @@ import matplotlib
 import os
 import numpy as np
 import scipy
-import queue
-from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
 from PyQt5 import uic, QtWidgets, QtCore
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 matplotlib.use('Qt5Agg')
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'interface.ui'))
 
 
-class MplCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+def lowpassFilter(data, fs, cutoff=1000, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = scipy.signal.butter(order, normal_cutoff, btype='low', analog=False)
+    y = scipy.signal.filtfilt(b, a, data)
+    return y
+
+
+def highpassFilter(data, fs, cutoff=300, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = scipy.signal.butter(order, normal_cutoff, btype='high', analog=False)
+    y = scipy.signal.filtfilt(b, a, data)
+    return y
+
+
+class Canvas(FigureCanvas):
+    def __init__(self, parent=None):
+        super().__init__()
 
     @staticmethod
     def minimumSizeHint():
         return QtCore.QSize(800, 300)
-
-
-def frequency_to_note_symbol(frequency):
-    if frequency == 0:
-        return "N/A"  # Return a placeholder value if the frequency is zero
-
-    # Calculate the note number with the correct offset (69 for A4 = 440 Hz)
-    note_number = round(12 * np.log2(frequency / 440) + 69)
-
-    # Calculate the octave
-    octave = note_number // 12
-
-    # Calculate the note name
-    note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    note_name = note_names[note_number % 12]
-
-    # Return the note symbol
-    return note_name + str(octave - 1)  # Subtract 1 to align octave with standard notation
 
 
 class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
@@ -49,18 +44,27 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         self.setupUi(self)
         self._nazwa_pliku = ''
 
-        self.sc = MplCanvas(self, width=5, height=4, dpi=100)
-        self.img_layout.addWidget(self.sc)
+        self.sc = Canvas(plt.Figure())
+        self.plt_layout.addWidget(self.sc)
 
-        self.audio_queue = queue.Queue()
-        self.max_tones = 5
         self.btn_load.clicked.connect(self.load_clicked)
         self.btn_recognize.clicked.connect(self.rec_clicked)
+
+        self.box_window.addItems(['hann', 'hamming', 'blackman', 'bartlett'])
+        self.box_filter.addItems(['None', 'Lowpass', 'Highpass'])
 
     def load_clicked(self):
         self._nazwa_pliku = 'test'
         self._nazwa_pliku = self.open_file_dialog()
         self.le_filePath.setText(self._nazwa_pliku)
+
+    def open_file_dialog(self):
+        options = QtWidgets.QFileDialog.Options()
+        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Wybierz plik", "",
+                                                             "Wszystkie Pliki (*);;Pliki tekstowe (*.txt)",
+                                                             options=options)
+        if file_name:
+            return file_name
 
     def display(self, dominant_note, significant_notes):
         self.txt_note.setPlainText(f"Dominant Note: {dominant_note}")
@@ -72,46 +76,27 @@ class AppWidgetWithUI(QtWidgets.QWidget, FORM_CLASS):
         if len(data.shape) == 2:
             data = data[:, 0]
 
-        dominant_note, significant_notes = self.analyze_data(data, sample_rate)
-        self.display(dominant_note, significant_notes)
+        samples_per_segment = int(self.text_Nperseg.text())
+        overlap_samples = int(self.text_Noverlap.text())
+        fft_points = int(self.text_Nfft.text())
+        window = str(self.box_window.currentText())
 
-    def open_file_dialog(self):
-        options = QtWidgets.QFileDialog.Options()
-        file_name, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Wybierz plik", "",
-                                                             "Wszystkie Pliki (*);;Pliki tekstowe (*.txt)",
-                                                             options=options)
-        if file_name:
-            return file_name
+        filterType = str(self.box_filter.currentText())
 
-    def analyze_data(self, data, sample_rate):
-        # Okno Hanninga i FFT
-        window = np.hanning(len(data))
-        fft_result = scipy.fft.fft(data * window)
-        magnitude_spectrum = np.abs(fft_result)
+        if filterType == 'Lowpass':
+            data = lowpassFilter(data, sample_rate)
+        elif filterType == 'Highpass':
+            data = highpassFilter(data, sample_rate)
 
-        # Skalowanie częstotliwości
-        frequencies = np.linspace(0, sample_rate, len(magnitude_spectrum))
-        half_length = len(frequencies) // 2
-        frequencies = frequencies[:half_length]
-        magnitude_spectrum = magnitude_spectrum[:half_length]
+        f, t, Sxx = scipy.signal.spectrogram(data, fs=sample_rate, nperseg=samples_per_segment, noverlap=overlap_samples, nfft=fft_points,
+                                             window=window)
 
-        # Wykrywanie tonów
-        threshold = 0.1 * np.max(magnitude_spectrum)  # Progowa wartość magnitudy
-        significant_indices = np.where(magnitude_spectrum > threshold)[0]
-        significant_frequencies = frequencies[significant_indices]
-        significant_notes = [frequency_to_note_symbol(f) for f in significant_frequencies]
-        significant_notes = set(significant_notes)
-
-        # Dominujący ton
-        dominant_index = np.argmax(magnitude_spectrum)
-        dominant_frequency = frequencies[dominant_index]
-        dominant_note = frequency_to_note_symbol(dominant_frequency)
-
-        # Wyświetlanie wyników
-        self.sc.axes.cla()
-        self.sc.axes.plot(frequencies, magnitude_spectrum, label='Magnitude Spectrum')
+        self.sc.figure.clear()
+        ax = self.sc.figure.add_subplot(111)
+        ax.pcolormesh(t, f, 10 * np.log10(Sxx))
+        ax.set_ylabel('Frequency [Hz]')
+        ax.set_xlabel('Time [sec]')
         self.sc.draw()
-        return dominant_note, significant_notes
 
 
 if __name__ == "__main__":

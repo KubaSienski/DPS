@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>962</width>
-    <height>216</height>
+    <height>185</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -22,22 +22,40 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QTextEdit" name="txt_note">
+        <widget class="QLineEdit" name="lineEdit_4">
          <property name="readOnly">
           <bool>true</bool>
          </property>
          <property name="placeholderText">
-          <string>Dominant note</string>
+          <string>Window:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="txt_harmonic">
-         <property name="readOnly">
-          <bool>true</bool>
+        <widget class="QComboBox" name="box_window">
+         <property name="editable">
+          <bool>false</bool>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="text_Nperseg">
          <property name="placeholderText">
-          <string>Other notes</string>
+          <string>Samples per segment:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="text_Noverlap">
+         <property name="placeholderText">
+          <string>Overlap samples:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="text_Nfft">
+         <property name="placeholderText">
+          <string>Fft points:</string>
          </property>
         </widget>
        </item>
@@ -46,19 +64,32 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QTextEdit" name="le_filePath">
+        <widget class="QLineEdit" name="lineEdit_5">
          <property name="readOnly">
           <bool>true</bool>
          </property>
          <property name="placeholderText">
-          <string>Select audio file (.WAV):</string>
+          <string>Filter:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="box_filter"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="le_filePath">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Select file (.WAV):</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_load">
          <property name="text">
-          <string>WczytajDzwiek</string>
+          <string>Load File</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -77,34 +108,7 @@
        <item>
         <widget class="QPushButton" name="btn_recognize">
          <property name="text">
-          <string>Rozpoznaj</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QRadioButton" name="radioButton">
-         <property name="text">
-          <string>Plik tekstowy</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioButton_2">
-         <property name="text">
-          <string>Dzwiek na zywo</string>
+          <string>Analyze</string>
          </property>
         </widget>
        </item>
@@ -113,7 +117,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="img_layout"/>
+    <layout class="QVBoxLayout" name="plt_layout"/>
    </item>
   </layout>
  </widget>
